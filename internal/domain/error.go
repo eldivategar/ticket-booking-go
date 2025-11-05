@@ -13,4 +13,11 @@ var (
 	ErrInternal        = errors.New("internal server error")
 	ErrBadRequest      = errors.New("bad request")
 	ErrTooManyRequests = errors.New("too many requests")
+
+	// Specific errors
+	ErrEmailAlreadyExists    = errors.New("email already exists")
+	ErrUsernameAlreadyExists = errors.New("username already exists")
+
+	// Auth errors
+	ErrInvalidCredentials = errors.New("invalid credentials")
 )

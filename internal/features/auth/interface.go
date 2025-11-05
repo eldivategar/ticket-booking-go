@@ -1,5 +1,12 @@
 package auth
 
-type Usecase interface {}
+import (
+	"context"
+)
 
-type Repository interface {}
+type Usecase interface {
+	Register(ctx context.Context, req RegisterRequest) (*LoginResponse, error)
+	Login(ctx context.Context, req LoginRequest) (*LoginResponse, error)
+}
+
+type Repository interface{}
