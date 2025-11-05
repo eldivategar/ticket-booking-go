@@ -2,12 +2,16 @@ package auth
 
 import (
 	"context"
+	"go-service-boilerplate/configs"
 	"go-service-boilerplate/internal/domain"
 	"go-service-boilerplate/internal/features/user"
+	"go-service-boilerplate/internal/platform/storage"
 	"go-service-boilerplate/internal/utils"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
+	"github.com/minio/minio-go/v7"
 	"go.uber.org/zap"
 )
 
@@ -23,11 +27,13 @@ type TokenGenerator interface {
 }
 
 type usecase struct {
-	repo     Repository
-	userRepo user.Repository
-	hasher   Hasher
-	jwt      TokenGenerator
-	log      *zap.SugaredLogger
+	repo        Repository
+	userRepo    user.Repository
+	hasher      Hasher
+	jwt         TokenGenerator
+	log         *zap.SugaredLogger
+	minioClient *minio.Client
+	cfg         configs.Config
 }
 
 func NewUsecase(
@@ -36,13 +42,17 @@ func NewUsecase(
 	h Hasher,
 	j TokenGenerator,
 	log *zap.SugaredLogger,
+	minioClient *minio.Client,
+	cfg configs.Config,
 ) Usecase {
 	return &usecase{
-		repo:     r,
-		userRepo: ur,
-		hasher:   h,
-		jwt:      j,
-		log:      log.Named("AuthUsecase"),
+		repo:        r,
+		userRepo:    ur,
+		hasher:      h,
+		jwt:         j,
+		log:         log.Named("AuthUsecase"),
+		minioClient: minioClient,
+		cfg:         cfg,
 	}
 }
 
@@ -67,7 +77,24 @@ func (u *usecase) Register(ctx context.Context, req RegisterRequest) (*LoginResp
 
 	// Create username from email prefix
 	username := strings.Split(req.Email, "@")[0]
-	username = strings.ToLower(username) + utils.GenerateRandomString(6)
+	username = strings.ToLower(username) + "-" + utils.GenerateRandomNumberString(6)
+
+	// Save avatar to MinIO if provided
+	if req.Avatar != "" {
+		path, err := storage.UploadImageToMinIO(
+			u.minioClient,
+			u.cfg.MinioBucket,
+			req.Avatar,
+			"avatars",
+			username,
+		)
+		if err != nil {
+			u.log.Error("failed to upload avatar to MinIO: ", err)
+			return nil, domain.ErrInternal
+		}
+
+		req.Avatar = path
+	}
 
 	// Save new user
 	newUser := domain.User{
@@ -75,6 +102,7 @@ func (u *usecase) Register(ctx context.Context, req RegisterRequest) (*LoginResp
 		Email:    req.Email,
 		Username: username,
 		Password: hashedPass,
+		Avatar:   req.Avatar,
 	}
 
 	createdUser, err := u.userRepo.CreateUser(ctx, newUser)
@@ -117,10 +145,30 @@ func (u *usecase) generateLoginResponse(user *domain.User) (*LoginResponse, erro
 		return nil, domain.ErrInternal
 	}
 
+	// Create presigned url for avatar if exists
+	avatarUrl := ""
+	if user.Avatar != "" {
+		presignedURL, err := storage.GetPresignedObject(
+			u.minioClient,
+			u.cfg.MinioBucket,
+			user.Avatar,
+			u.cfg.MinioEndpoint,
+			u.cfg.MinioEndpoint,
+			time.Minute*15,
+		)
+		if err != nil {
+			u.log.Error("failed to generate presigned url for avatar: ", err)
+			return nil, domain.ErrInternal
+		}
+
+		avatarUrl = presignedURL
+	}
+
 	resUser := UserLoginResponse{
 		ID:       user.ID,
 		FullName: user.FullName,
 		Email:    user.Email,
+		Avatar:   avatarUrl,
 	}
 
 	return &LoginResponse{User: resUser, AccessToken: token}, nil

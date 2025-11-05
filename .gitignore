@@ -2,4 +2,11 @@
 
 # Air
 /temp
-air_errors.log
+*.log
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib

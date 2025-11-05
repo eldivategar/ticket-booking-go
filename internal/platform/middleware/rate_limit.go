@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"go-service-boilerplate/internal/domain"
-	"go-service-boilerplate/internal/platform/response"
+	"go-service-boilerplate/internal/platform/responses"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,7 +17,7 @@ func RateLimit() fiber.Handler {
 			return c.IP()
 		},
 		LimitReached: func(c *fiber.Ctx) error {
-			return response.Error(c, fiber.StatusTooManyRequests, domain.ErrTooManyRequests.Error())
+			return responses.Error(c, fiber.StatusTooManyRequests, domain.ErrTooManyRequests.Error())
 		},
 	})
 }

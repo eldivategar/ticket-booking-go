@@ -35,16 +35,16 @@ func SetupDependencies(
 	hasher := hash.NewBcryptHasher()
 	jwtGen := jwt.NewJWTGenerator(cfg.JWTAccessSecret)
 	val := validator.New()
-	authMiddleware := middleware.AuthRequired(cfg.JWTAccessSecret)
+	authMiddleware := middleware.AuthRequired(cfg.JWTAccessSecret, log)
 
 	// User Features
 	userRepo := user.NewRepository(db)
-	userUsecase := user.NewUsecase(userRepo, log)
+	userUsecase := user.NewUsecase(userRepo, log, s3, cfg)
 	userHandler := user.NewHandler(userUsecase)
 
 	// Auth Features
 	authRepo := auth.NewRepository(db)
-	authUsecase := auth.NewUsecase(authRepo, userRepo, hasher, jwtGen, log)
+	authUsecase := auth.NewUsecase(authRepo, userRepo, hasher, jwtGen, log, s3, cfg)
 	authHandler := auth.NewHandler(authUsecase, val)
 
 	return &Dependencies{

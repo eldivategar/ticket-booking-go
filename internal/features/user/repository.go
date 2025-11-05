@@ -3,6 +3,8 @@ package user
 import (
 	"context"
 	"go-service-boilerplate/internal/domain"
+
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -38,6 +40,18 @@ func (r *repository) GetUserByEmail(ctx context.Context, email string) (*domain.
 func (r *repository) GetUserByUsername(ctx context.Context, username string) (*domain.User, error) {
 	var user domain.User
 	err := r.db.WithContext(ctx).Where("username = ?", username).First(&user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *repository) GetUserByID(ctx context.Context, userID uuid.UUID) (*domain.User, error) {
+	var user domain.User
+	err := r.db.WithContext(ctx).Where("id = ?", userID).First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil

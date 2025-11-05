@@ -1,4 +1,4 @@
-package response
+package responses
 
 import (
 	"go-service-boilerplate/internal/domain"
@@ -61,6 +61,8 @@ func UsecaseError(c *fiber.Ctx, err error) error {
 		return Error(c, fiber.StatusBadRequest, err.Error())
 	case domain.ErrUsernameAlreadyExists:
 		return Error(c, fiber.StatusBadRequest, err.Error())
+	case domain.ErrUserNotFound:
+		return Error(c, fiber.StatusNotFound, err.Error())
 	case domain.ErrInvalidCredentials:
 		return Error(c, fiber.StatusUnauthorized, err.Error())
 	default:
