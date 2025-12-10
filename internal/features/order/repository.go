@@ -62,7 +62,9 @@ func (r *repository) GetOrderList(ctx context.Context, userID uuid.UUID) ([]doma
 	if err := r.db.Model(&domain.Order{}).
 		Where("user_id = ?", userID).
 		Preload("Event").
-		Find(&orders).Error; err != nil {
+		Order("created_at DESC").
+		Find(&orders).
+		Error; err != nil {
 		return nil, err
 	}
 	return orders, nil

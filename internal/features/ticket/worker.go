@@ -12,7 +12,9 @@ import (
 	"go-war-ticket-service/internal/platform/pdf"
 	"go-war-ticket-service/internal/utils"
 	"io"
+	"strings"
 
+	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/minio/minio-go/v7"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"go.uber.org/zap"
@@ -119,6 +121,12 @@ func (w *TicketWorker) processMessage(d amqp.Delivery) error {
 		}
 	}
 
+	// Get image extension
+	var imgExtension consts.Extension = consts.Jpg // Default
+	if strings.HasSuffix(strings.ToLower(order.Event.Image), ".png") {
+		imgExtension = consts.Png
+	}
+
 	// Create new ticket
 	for i := 0; i < order.Quantity; i++ {
 		ticketNumber := fmt.Sprintf("TIK-%s-%s", order.BookingID, utils.GenerateRandomNumberString(3))
@@ -129,6 +137,7 @@ func (w *TicketWorker) processMessage(d amqp.Delivery) error {
 			EventLocation:    order.Event.Location,
 			EventDate:        order.Event.Date,
 			EventImageBase64: imageBase64,
+			ImageExtension:   imgExtension,
 			OrderID:          order.BookingID,
 			TicketCode:       ticketNumber,
 		}

@@ -51,7 +51,10 @@ func (r *repository) GetEventByName(ctx context.Context, eventName string) (*dom
 
 func (r *repository) GetAllEvent(ctx context.Context) ([]domain.Event, error) {
 	var events []domain.Event
-	err := r.db.WithContext(ctx).Find(&events).Error
+	err := r.db.WithContext(ctx).
+		Order("created_at DESC").
+		Find(&events).
+		Error
 	if err != nil {
 		return nil, err
 	}

@@ -18,6 +18,7 @@ type TicketData struct {
 	EventLocation    string
 	EventDate        time.Time
 	EventImageBase64 string
+	ImageExtension   consts.Extension
 	OrderID          string
 	TicketCode       string
 }
@@ -41,7 +42,7 @@ func (m *marotoGenerator) GenerateTicket(data TicketData) ([]byte, error) {
 	if data.EventImageBase64 != "" {
 		p.Row(50, func() {
 			p.Col(12, func() {
-				_ = p.Base64Image(data.EventImageBase64, consts.Jpg, props.Rect{
+				_ = p.Base64Image(data.EventImageBase64, data.ImageExtension, props.Rect{
 					Center:  true,
 					Percent: 100,
 				})
