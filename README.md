@@ -1,6 +1,6 @@
-# 🎫 Ticket Booking Service
+# 🎫 TiBo - Ticket Booking System
 
-**Ticket Booking Service** is a robust backend application designed for handling high-traffic event ticketing systems ("Ticket War"). It handles user authentication, event management, order processing with race-condition handling (Redis), and PDF ticket generation.
+**TiBo** is a robust backend application designed for handling high-traffic event ticketing systems ("Ticket War"). It handles user authentication, event management, order processing with race-condition handling (Redis), and PDF ticket generation.
 
 ---
 
