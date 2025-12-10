@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"go-service-boilerplate/configs"
+	"go-war-ticket-service/configs"
 	"net/url"
 	"strings"
 	"time"
@@ -110,4 +110,10 @@ func GetPresignedObject(minioClient *minio.Client, bucketName, objectName, minio
 	// Replace minio endpoint with public endpoint
 	urlStr := strings.Replace(presignedUrl.String(), minioEndpoint, publicEndpoint, 1)
 	return urlStr, nil
+}
+
+// DeleteObjectFromMinIO delete object from minio
+func DeleteObjectFromMinIO(minioClient *minio.Client, bucketName string, objectName string) error {
+	ctx := context.Background()
+	return minioClient.RemoveObject(ctx, bucketName, objectName, minio.RemoveObjectOptions{})
 }

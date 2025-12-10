@@ -2,8 +2,8 @@ package database
 
 import (
 	"fmt"
-	"go-service-boilerplate/configs"
-	"go-service-boilerplate/internal/domain"
+	"go-war-ticket-service/configs"
+	"go-war-ticket-service/internal/domain"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -19,8 +19,16 @@ func Connect(cfg configs.Config) (*gorm.DB, error) {
 	}
 
 	// Auto-migrate (Hanya untuk development, idealnya gunakan file migrasi)
-	if err = db.AutoMigrate(&domain.User{}); err != nil {
-		return nil, err
+	if cfg.ServerMode == "development" {
+		err := db.AutoMigrate(
+			&domain.User{},
+			&domain.Event{},
+			&domain.Order{},
+			&domain.Ticket{},
+		)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return db, nil

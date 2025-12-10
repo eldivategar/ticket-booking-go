@@ -1,0 +1,58 @@
+# .air.toml
+# Air.toml configuration for Air - hot-reload Go
+
+# Root directory to be monitored
+root = "."
+# Temporary directory for build results
+tmp_dir = "tmp"
+
+[build]
+# Command to run your application
+# {command} will be replaced with the built binary
+# {args} adalah argumen yang bisa Anda tamba
+cmd = "go build -o ./tmp/app.exe ./cmd/api/main.go"
+
+# Name of the binary to run
+bin = "tmp/app.exe"
+
+# Full command to run the binary
+# Air will automatically load .env file from root
+full_bin = ""
+
+# File extensions to monitor
+include_ext = ["go", "toml", "yaml", "env"]
+# Directories to ignore
+# IMPORTANT: Ignore 'tmp_dir' to avoid infinite loop!
+exclude_dir = ["tmp", "migrations", "bin", "vendor", "tools"]
+# File or directory to monitor
+include_dir = []
+# File or directory to ignore
+exclude_file = []
+# Stop process if build error occurs
+stop_on_error = true
+# Send interrupt signal to application
+send_interrupt = true
+# Delay before sending interrupt signal
+interrupt_delay = 500 # ms
+
+[log]
+# Display time in log
+time = true
+# Only main logs (build and run)
+main_only = false
+
+[color]
+# Custom output colors
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+app = "bold_white"
+
+[misc]
+# Delete binary 'tmp/app' on exit
+clean_on_exit = true
+
+[screen]
+# Clear screen on rebuild
+clear_on_rebuild = true

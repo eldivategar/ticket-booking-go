@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"go-service-boilerplate/internal/domain"
+	"go-war-ticket-service/internal/domain"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

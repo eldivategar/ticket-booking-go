@@ -2,11 +2,11 @@ package auth
 
 import (
 	"context"
-	"go-service-boilerplate/configs"
-	"go-service-boilerplate/internal/domain"
-	"go-service-boilerplate/internal/features/user"
-	"go-service-boilerplate/internal/platform/storage"
-	"go-service-boilerplate/internal/utils"
+	"go-war-ticket-service/configs"
+	"go-war-ticket-service/internal/domain"
+	"go-war-ticket-service/internal/features/user"
+	"go-war-ticket-service/internal/platform/storage"
+	"go-war-ticket-service/internal/utils"
 	"strings"
 	"time"
 
@@ -153,7 +153,7 @@ func (u *usecase) generateLoginResponse(user *domain.User) (*LoginResponse, erro
 			u.cfg.MinioBucket,
 			user.Avatar,
 			u.cfg.MinioEndpoint,
-			u.cfg.MinioEndpoint,
+			u.cfg.MinioPublicEndpoint,
 			time.Minute*15,
 		)
 		if err != nil {

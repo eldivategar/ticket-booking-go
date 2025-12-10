@@ -26,4 +26,23 @@ func SetupRoutes(app *fiber.App, deps *Dependencies) {
 	userGroup := v1.Group("/user")
 	userGroup.Use(deps.AuthMiddleware)
 	userGroup.Get("/me", deps.UserHandler.GetMyProfile)
+
+	// Event routes
+	eventGroup := v1.Group("/event")
+	eventGroup.Use(deps.AuthMiddleware)
+	eventGroup.Get("/:event_id", deps.EventHandler.GetEventByID)
+	eventGroup.Get("/", deps.EventHandler.GetAllEvent)
+	eventGroup.Post("/", deps.EventHandler.CreateEvent)
+	eventGroup.Delete("/:event_id", deps.EventHandler.DeleteEvent)
+
+	// Order routes
+	orderGroup := v1.Group("/order")
+	orderGroup.Use(deps.AuthMiddleware)
+	orderGroup.Post("/", deps.OrderHandler.CreateOrder)
+	orderGroup.Get("/:booking_id", deps.OrderHandler.GetOrderByBookingID)
+	orderGroup.Get("/", deps.OrderHandler.GetOrderList)
+	
+	// Order Webhook routes
+	orderWebhookGroup := v1.Group("/order/webhook")
+	orderWebhookGroup.Post("/payment", deps.OrderHandler.ProcessPaymentWebhook)
 }

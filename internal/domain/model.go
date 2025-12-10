@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -8,8 +10,8 @@ import (
 // BaseModel defines common fields for all database models
 type BaseModel struct {
 	ID        uuid.UUID      `gorm:"type:uuid;primary_key;" json:"id"`
-	CreatedAt int64          `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt int64          `gorm:"autoUpdateTime" json:"updated_at"`
+	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 

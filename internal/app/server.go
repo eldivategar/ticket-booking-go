@@ -2,10 +2,10 @@ package app
 
 import (
 	"fmt"
-	"go-service-boilerplate/configs"
-	"go-service-boilerplate/internal/platform/cache"
-	"go-service-boilerplate/internal/platform/database"
-	"go-service-boilerplate/internal/platform/storage"
+	"go-war-ticket-service/configs"
+	"go-war-ticket-service/internal/platform/cache"
+	"go-war-ticket-service/internal/platform/database"
+	"go-war-ticket-service/internal/platform/storage"
 
 	"go.uber.org/zap"
 

@@ -3,7 +3,7 @@ package cache
 import (
 	"context"
 	"fmt"
-	"go-service-boilerplate/configs"
+	"go-war-ticket-service/configs"
 
 	"github.com/redis/go-redis/v9"
 )

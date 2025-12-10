@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"go-service-boilerplate/internal/domain"
-	"go-service-boilerplate/internal/platform/responses"
-	"go-service-boilerplate/internal/utils"
+	"go-war-ticket-service/internal/domain"
+	"go-war-ticket-service/internal/platform/responses"
+	"go-war-ticket-service/internal/utils"
 
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"

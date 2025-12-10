@@ -2,9 +2,9 @@ package user
 
 import (
 	"context"
-	"go-service-boilerplate/configs"
-	"go-service-boilerplate/internal/domain"
-	"go-service-boilerplate/internal/platform/storage"
+	"go-war-ticket-service/configs"
+	"go-war-ticket-service/internal/domain"
+	"go-war-ticket-service/internal/platform/storage"
 	"time"
 
 	"github.com/google/uuid"
@@ -50,7 +50,7 @@ func (u *usecase) GetProfile(ctx context.Context, userID uuid.UUID) (*domain.Use
 			u.cfg.MinioBucket,
 			user.Avatar,
 			u.cfg.MinioEndpoint,
-			u.cfg.MinioEndpoint,
+			u.cfg.MinioPublicEndpoint,
 			time.Minute*15,
 		)
 		if err != nil {

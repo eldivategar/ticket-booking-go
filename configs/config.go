@@ -24,18 +24,22 @@ type Config struct {
 	RedisDB       int    `mapstructure:"REDIS_DB"`
 
 	// S3 configurations (minio for default)
-	MinioEndpoint  string `mapstructure:"MINIO_ENDPOINT"`
-	MinioAccessKey string `mapstructure:"MINIO_ACCESS_KEY"`
-	MinioSecretKey string `mapstructure:"MINIO_SECRET_KEY"`
-	MinioRegion    string `mapstructure:"MINIO_REGION"`
-	MinioBucket    string `mapstructure:"MINIO_BUCKET"`
-	MinioUseSSL    bool   `mapstructure:"MINIO_USE_SSL"`
+	MinioEndpoint       string `mapstructure:"MINIO_ENDPOINT"`
+	MinioPublicEndpoint string `mapstructure:"MINIO_PUBLIC_ENDPOINT"`
+	MinioAccessKey      string `mapstructure:"MINIO_ACCESS_KEY"`
+	MinioSecretKey      string `mapstructure:"MINIO_SECRET_KEY"`
+	MinioRegion         string `mapstructure:"MINIO_REGION"`
+	MinioBucket         string `mapstructure:"MINIO_BUCKET"`
+	MinioUseSSL         bool   `mapstructure:"MINIO_USE_SSL"`
 
 	// JWT configurations
 	JWTAccessSecret       string `mapstructure:"JWT_ACCESS_SECRET"`
 	JWTRefreshSecret      string `mapstructure:"JWT_REFRESH_SECRET"`
 	JWTAccessTokenExpire  string `mapstructure:"JWT_ACCESS_TOKEN_EXPIRE"`
 	JWTRefreshTokenExpire string `mapstructure:"JWT_REFRESH_TOKEN_EXPIRE"`
+
+	// Message Broker configurations
+	RabbitMQURL string `mapstructure:"RABBITMQ_URL"`
 }
 
 func LoadConfig() (cfg Config, err error) {

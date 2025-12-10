@@ -1,13 +1,19 @@
 package app
 
 import (
-	"go-service-boilerplate/configs"
-	"go-service-boilerplate/internal/features/auth"
-	"go-service-boilerplate/internal/features/user"
-	"go-service-boilerplate/internal/platform/hash"
-	"go-service-boilerplate/internal/platform/jwt"
-	"go-service-boilerplate/internal/platform/middleware"
-	"go-service-boilerplate/internal/platform/validator"
+	"go-war-ticket-service/configs"
+	"go-war-ticket-service/internal/features/auth"
+	"go-war-ticket-service/internal/features/event"
+	"go-war-ticket-service/internal/features/order"
+	"go-war-ticket-service/internal/features/ticket"
+	"go-war-ticket-service/internal/features/user"
+	"go-war-ticket-service/internal/platform/hash"
+	"go-war-ticket-service/internal/platform/jwt"
+	rabbitmq "go-war-ticket-service/internal/platform/message_broker/rabbit_mq"
+	"go-war-ticket-service/internal/platform/middleware"
+	"go-war-ticket-service/internal/platform/pdf"
+	"go-war-ticket-service/internal/platform/validator"
+	"go-war-ticket-service/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/minio/minio-go/v7"
@@ -21,6 +27,8 @@ type Dependencies struct {
 	AuthHandler    auth.Handler
 	UserHandler    user.Handler
 	AuthMiddleware fiber.Handler
+	EventHandler   event.Handler
+	OrderHandler   order.Handler
 }
 
 // Initialize and set up all dependencies
@@ -36,6 +44,15 @@ func SetupDependencies(
 	jwtGen := jwt.NewJWTGenerator(cfg.JWTAccessSecret)
 	val := validator.New()
 	authMiddleware := middleware.AuthRequired(cfg.JWTAccessSecret, log)
+	mqPublisher, err := rabbitmq.NewRabbitMQPublisher(cfg.RabbitMQURL)
+	if err != nil {
+		log.Error("Failed to create RabbitMQ publisher", zap.Error(err))
+		return nil
+	}
+	pdfGenerator := pdf.NewMarotoGenerator()
+
+	// Create new queue
+	mqPublisher.CreateQueue(utils.QueueTicketGeneration)
 
 	// User Features
 	userRepo := user.NewRepository(db)
@@ -47,9 +64,28 @@ func SetupDependencies(
 	authUsecase := auth.NewUsecase(authRepo, userRepo, hasher, jwtGen, log, s3, cfg)
 	authHandler := auth.NewHandler(authUsecase, val)
 
+	// Event Features
+	eventRepo := event.NewRepository(db)
+	eventUsecase := event.NewUsecase(eventRepo, log, s3, cfg)
+	eventHandler := event.NewHandler(eventUsecase, val)
+
+	// Order Features
+	orderRepo := order.NewRepository(db)
+	orderUsecase := order.NewUsecase(orderRepo, log, s3, cfg, rdb)
+	orderService := order.NewService(orderRepo, log, mqPublisher)
+	orderHandler := order.NewHandler(orderUsecase, orderService, val)
+
+	// Worker
+	ticketRepo := ticket.NewRepository(db)
+	ticketWorker := ticket.NewTicketWorker(mqPublisher.GetConnection(), ticketRepo, orderRepo, s3, cfg, pdfGenerator, log)
+
+	go ticketWorker.Start()
+
 	return &Dependencies{
 		AuthHandler:    *authHandler,
 		UserHandler:    *userHandler,
 		AuthMiddleware: authMiddleware,
+		EventHandler:   *eventHandler,
+		OrderHandler:   *orderHandler,
 	}
 }

@@ -18,7 +18,15 @@ var (
 	ErrEmailAlreadyExists    = errors.New("email already exists")
 	ErrUsernameAlreadyExists = errors.New("username already exists")
 	ErrUserNotFound          = errors.New("user not found")
+	ErrInvalidID             = errors.New("invalid id")
 
 	// Auth errors
 	ErrInvalidCredentials = errors.New("invalid credentials")
+
+	// Event errors
+	ErrInvalidStock   = errors.New("invalid stock")
+	ErrInvalidPrice   = errors.New("invalid price")
+	ErrInvalidDate    = errors.New("invalid date")
+	ErrEventNotFound  = errors.New("event not found")
+	ErrNotEnoughStock = errors.New("not enough stock")
 )

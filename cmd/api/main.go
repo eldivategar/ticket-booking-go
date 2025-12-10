@@ -1,9 +1,9 @@
 package main
 
 import (
-	"go-service-boilerplate/configs"
-	"go-service-boilerplate/internal/app"
-	"go-service-boilerplate/internal/platform/logger"
+	"go-war-ticket-service/configs"
+	"go-war-ticket-service/internal/app"
+	"go-war-ticket-service/internal/platform/logger"
 	"log"
 )
 

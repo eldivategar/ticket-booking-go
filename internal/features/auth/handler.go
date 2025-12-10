@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"go-service-boilerplate/internal/platform/responses"
-	"go-service-boilerplate/internal/platform/validator"
+	"go-war-ticket-service/internal/platform/responses"
+	"go-war-ticket-service/internal/platform/validator"
 
 	"github.com/gofiber/fiber/v2"
 )

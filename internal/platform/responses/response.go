@@ -1,7 +1,7 @@
 package responses
 
 import (
-	"go-service-boilerplate/internal/domain"
+	"go-war-ticket-service/internal/domain"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -65,6 +65,18 @@ func UsecaseError(c *fiber.Ctx, err error) error {
 		return Error(c, fiber.StatusNotFound, err.Error())
 	case domain.ErrInvalidCredentials:
 		return Error(c, fiber.StatusUnauthorized, err.Error())
+	case domain.ErrInvalidID:
+		return Error(c, fiber.StatusBadRequest, err.Error())
+	case domain.ErrInvalidStock:
+		return Error(c, fiber.StatusBadRequest, err.Error())
+	case domain.ErrInvalidPrice:
+		return Error(c, fiber.StatusBadRequest, err.Error())
+	case domain.ErrInvalidDate:
+		return Error(c, fiber.StatusBadRequest, err.Error())
+	case domain.ErrEventNotFound:
+		return Error(c, fiber.StatusNotFound, err.Error())
+	case domain.ErrNotEnoughStock:
+		return Error(c, fiber.StatusBadRequest, err.Error())
 	default:
 		return Error(c, fiber.StatusInternalServerError, domain.ErrInternal.Error())
 	}

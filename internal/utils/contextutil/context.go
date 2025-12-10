@@ -3,7 +3,7 @@ package contextutil
 import (
 	"context"
 	"errors"
-	"go-service-boilerplate/internal/utils"
+	"go-war-ticket-service/internal/utils"
 
 	"github.com/google/uuid"
 )

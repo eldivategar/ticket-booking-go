@@ -1,9 +1,9 @@
 package user
 
 import (
-	"go-service-boilerplate/internal/domain"
-	"go-service-boilerplate/internal/platform/responses"
-	"go-service-boilerplate/internal/utils/contextutil"
+	"go-war-ticket-service/internal/domain"
+	"go-war-ticket-service/internal/platform/responses"
+	"go-war-ticket-service/internal/utils/contextutil"
 
 	"github.com/gofiber/fiber/v2"
 )
